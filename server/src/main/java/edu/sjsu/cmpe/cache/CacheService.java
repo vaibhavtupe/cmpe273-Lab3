@@ -32,18 +32,10 @@ public class CacheService extends Service<CacheServiceConfiguration> {
     @Override
     public void run(CacheServiceConfiguration configuration,
             Environment environment) throws Exception {
-        try {
-            String persistentFile = "chronicleHashMapStorage";
-
-            File file = new File(persistentFile);
-
-            ChronicleMapBuilder<Long, Entry> builder = ChronicleMapBuilder.of(Long.class, Entry.class);
-            ConcurrentMap<Long, Entry> map = builder.createPersistedTo(file);
-            CacheInterface cache = new ChronicleMapCache(map);
-            environment.addResource(new CacheResource(cache));
-            log.info("Loaded resources");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    	
+    	String persistentStorageFile=Integer.toString(configuration.getHttpConfiguration().getPort())+".dat";
+        CacheInterface cache = new ChronicleMapCache(persistentStorageFile);
+        environment.addResource(new CacheResource(cache));
+        log.info("Loaded resources");
     }
 }
